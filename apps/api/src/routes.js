@@ -1,8 +1,10 @@
+// Updated routes with auth middleware protection
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('./db');
+const { authMiddleware } = require('./middleware');
 
 // Health
 router.get('/health', (req, res) => {
@@ -56,7 +58,8 @@ router.get('/customers', async (req, res) => {
   }
 });
 
-router.post('/customers', async (req, res) => {
+// Protected: create customer
+router.post('/customers', authMiddleware, async (req, res) => {
   try {
     const { name, contact_phone, address } = req.body;
     const r = await db.query('INSERT INTO customers (name, contact_phone, address) VALUES ($1,$2,$3) RETURNING *', [name, contact_phone, address]);
@@ -78,7 +81,8 @@ router.get('/devices', async (req, res) => {
   }
 });
 
-router.post('/devices', async (req, res) => {
+// Protected: create device
+router.post('/devices', authMiddleware, async (req, res) => {
   try {
     const { customer_id, model, serial_number, location_description } = req.body;
     const r = await db.query('INSERT INTO devices (customer_id, model, serial_number, location_description) VALUES ($1,$2,$3,$4) RETURNING *', [customer_id, model, serial_number, location_description]);
@@ -100,7 +104,8 @@ router.get('/tickets', async (req, res) => {
   }
 });
 
-router.post('/tickets', async (req, res) => {
+// Protected: create ticket
+router.post('/tickets', authMiddleware, async (req, res) => {
   try {
     const { customer_id, device_id, title, description, scheduled_at, assigned_tech } = req.body;
     const r = await db.query('INSERT INTO tickets (customer_id, device_id, title, description, scheduled_at, assigned_tech) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *', [customer_id, device_id, title, description, scheduled_at, assigned_tech]);
