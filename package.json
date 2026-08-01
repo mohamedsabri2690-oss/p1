@@ -1,0 +1,14 @@
+{
+  "name": "p1-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev:api": "pnpm --filter @p1/api dev",
+    "dev:web": "pnpm --filter @p1/web dev",
+    "dev:mobile": "pnpm --filter @p1/mobile start"
+  }
+}
